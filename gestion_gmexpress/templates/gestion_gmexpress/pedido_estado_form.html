@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Cambiar estado pedido{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h4 class="my-1">Cambiar estado del pedido {{ pedido.numero_pedido }}</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+                <p><strong>Estado actual:</strong> {{ pedido.estado.nombre }}</p>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {{ form|crispy }}
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{% url 'pedido-list' %}" class="btn btn-outline-secondary">
+                            Volver
+                        </a>
+                        <button class="btn btn-primary" type="submit">
+                            Guardar cambio
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if pedido.historial_estados.all %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="my-1">Historial de estados</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for h in pedido.historial_estados.all %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <strong>{{ h.estado.nombre }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ h.fecha_cambio|date:"d-m-Y H:i" }}
+                                            {% if h.cambiado_por %}
+                                                · por {{ h.cambiado_por }}
+                                            {% endif %}
+                                        </small>
+                                        {% if h.comentario %}
+                                            <div class="small mt-1">{{ h.comentario }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">
+                                Sin historial registrado.
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

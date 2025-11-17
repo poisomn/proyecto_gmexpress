@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - GMExpress{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard Distribución GMExpress</h1>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Vehículos</h5>
+                <p class="display-6">{{ total_vehiculos }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Conductores</h5>
+                <p class="display-6">{{ total_conductores }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Pedidos</h5>
+                <p class="display-6">{{ total_pedidos }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Viajes</h5>
+                <p class="display-6">{{ total_viajes }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-4">Hoy</h3>
+<ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between">
+        Viajes programados hoy
+        <span class="badge bg-primary rounded-pill">{{ viajes_hoy }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+        Pedidos sin viaje asignado
+        <span class="badge bg-danger rounded-pill">{{ pedidos_pendientes }}</span>
+    </li>
+</ul>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Viaje {{ viaje.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Info principal del viaje -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="my-1">Viaje {{ viaje.id }} - {{ viaje.nombre_ruta }}</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Fecha programada:</strong> {{ viaje.fecha_programada }}</p>
+                <p><strong>Origen:</strong> {{ viaje.origen }}</p>
+                <p><strong>Destino:</strong> {{ viaje.destino }}</p>
+                <p><strong>Vehículo:</strong> {{ viaje.vehiculo }}</p>
+                <p><strong>Conductor:</strong> {{ viaje.conductor }}</p>
+                <p>
+                    <strong>Estado:</strong>
+                    <span class="badge bg-primary">{{ viaje.estado.nombre }}</span>
+                </p>
+                <p><strong>Cantidad total de cajas:</strong> {{ viaje.cantidad_cajas_total }}</p>
+                {% if viaje.observaciones %}
+                    <p><strong>Observaciones:</strong> {{ viaje.observaciones }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Form cambiar estado -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="my-1">Cambiar estado del viaje</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'viaje-estado' viaje.pk %}" novalidate>
+                    {% csrf_token %}
+                    {{ form_estado_viaje|crispy }}
+                    <div class="d-flex justify-content-end mt-2">
+                        <button class="btn btn-primary btn-sm" type="submit">
+                            Actualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de paradas -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="my-1">Paradas del viaje</h5>
+        <span class="badge bg-secondary">
+            Total: {{ paradas|length }}
+        </span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Pedido</th>
+                        <th>Estado entrega</th>
+                        <th>Motivo fallo</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in paradas %}
+                    <tr>
+                        <td>{{ p.secuencia }}</td>
+                        <td>{{ p.pedido.numero_pedido }}</td>
+                        <td>{{ p.estado_entrega.nombre }}</td>
+                        <td>{{ p.get_motivo_fallo_display }}</td>
+                        <td>{{ p.observaciones|default:"-" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">
+                            No hay paradas registradas para este viaje.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Form añadir parada -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="my-1">Añadir nueva parada</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" action="{% url 'parada-create' viaje.id %}" novalidate>
+            {% csrf_token %}
+            {{ parada_form|crispy }}
+
+            <div class="d-flex justify-content-end mt-2">
+                <button class="btn btn-success btn-sm" type="submit">
+                    Agregar parada
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

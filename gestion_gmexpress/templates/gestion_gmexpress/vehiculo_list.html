@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Vehículos{% endblock %}
+{% block content %}
+<h1>Vehículos</h1>
+<a href="{% url 'vehiculo-create' %}" class="btn btn-primary mb-3">Nuevo vehículo</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Placa</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for v in vehiculos %}
+        <tr>
+            <td>{{ v.placa }}</td>
+            <td>{{ v.marca }}</td>
+            <td>{{ v.modelo }}</td>
+            <td>{{ v.anio }}</td>
+            <td>{{ v.estado }}</td>
+            <td><a href="{% url 'vehiculo-update' v.pk %}" class="btn btn-sm btn-secondary">Editar</a></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">No hay vehículos registrados.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Pedidos{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Pedidos</h1>
+
+<div class="d-flex justify-content-between mb-3">
+    <a href="{% url 'pedido-create' %}" class="btn btn-primary">
+        Nuevo pedido
+    </a>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>N° Pedido</th>
+            <th>Cliente</th>
+            <th>Comuna</th>
+            <th>Estado</th>
+            <th>Viaje</th>
+            <th>Fecha creación</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in pedidos %}
+        <tr>
+            <td>{{ p.numero_pedido }}</td>
+            <td>{{ p.cliente }}</td>
+            <td>{{ p.comuna }}</td>
+            <td><span class="badge bg-secondary">{{ p.estado.nombre }}</span></td>
+            <td>
+                {% if p.viaje %}
+                    {{ p.viaje.nombre_ruta }} ({{ p.viaje.fecha_programada }})
+                {% else %}
+                    <span class="text-muted">Sin viaje</span>
+                {% endif %}
+            </td>
+            <td>{{ p.fecha_creacion|date:"d-m-Y H:i" }}</td>
+            <td class="text-end">
+                <a href="{% url 'pedido-estado' p.pk %}" class="btn btn-sm btn-outline-primary">
+                    Cambiar estado
+                </a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="7">No hay pedidos registrados.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
