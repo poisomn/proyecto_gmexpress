@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Conductores - GMExpress{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">Conductores</h2>
+        <p class="text-muted mb-0">
+            Gestión de choferes disponibles para asignar a los viajes de distribución.
+        </p>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-dark-subtle text-dark border">
+            Total: <strong>{{ conductores|length }}</strong>
+        </span>
+        <a href="{% url 'conductor-create' %}" class="btn btn-primary">
+            + Nuevo conductor
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">
+            Listado de conductores
+        </span>
+        <span class="text-muted small">
+            Haz clic en “Editar” para actualizar datos o licencias.
+        </span>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 1%;"></th>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Licencia</th>
+                        <th>Vencimiento</th>
+                        <th>Experiencia</th>
+                        <th style="width: 1%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for c in conductores %}
+                    {% with nombre=c.usuario.user.get_full_name|default:c.usuario.user.username %}
+                    <tr>
+                        <td>
+                            {# "Avatar" simple con inicial #}
+                            <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
+                                 style="width: 32px; height: 32px; font-size: 0.85rem;">
+                                {{ nombre|first|upper }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold">
+                                {{ nombre }}
+                            </div>
+                            <div class="text-muted small">
+                                Perfil: {{ c.usuario }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="text-muted">
+                                @{{ c.usuario.user.username }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                {{ c.tipo_licencia }}
+                            </span>
+                            <div class="small text-muted">
+                                N° {{ c.numero_licencia }}
+                            </div>
+                        </td>
+                        <td>
+                            {{ c.vencimiento_licencia|date:"d-m-Y" }}
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column">
+                                <span>{{ c.experiencia_meses }} meses</span>
+                                {% if c.experiencia_meses < 12 %}
+                                    <span class="badge bg-warning text-dark mt-1">Nuevo</span>
+                                {% elif c.experiencia_meses >= 36 %}
+                                    <span class="badge bg-success mt-1">Experto</span>
+                                {% else %}
+                                    <span class="badge bg-secondary mt-1">Intermedio</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'conductor-update' c.pk %}"
+                               class="btn btn-sm btn-outline-secondary">
+                                Editar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No hay conductores registrados todavía.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

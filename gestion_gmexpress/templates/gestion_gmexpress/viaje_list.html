@@ -1,34 +1,146 @@
 {% extends "base.html" %}
-{% block title %}Viajes{% endblock %}
-{% block content %}
-<h1>Viajes</h1>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Ruta</th>
-            <th>Fecha</th>
-            <th>Vehículo</th>
-            <th>Conductor</th>
-            <th>Estado</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for v in viajes %}
-        <tr>
-            <td>{{ v.id }}</td>
-            <td>{{ v.nombre_ruta }}</td>
-            <td>{{ v.fecha_programada }}</td>
-            <td>{{ v.vehiculo }}</td>
-            <td>{{ v.conductor }}</td>
-            <td>{{ v.estado }}</td>
-            <td><a href="{% url 'viaje-detail' v.pk %}" class="btn btn-sm btn-primary">Ver</a></td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="7">No hay viajes registrados.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% block title %}Viajes - GMExpress{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">Viajes</h2>
+        <p class="text-muted mb-0">
+            Planificación y seguimiento de las rutas de distribución.
+        </p>
+    </div>
+
+    {% if user.is_staff or user.is_superuser %}
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-dark-subtle text-dark border">
+                Total: <strong>{{ viajes|length }}</strong>
+            </span>
+            <a href="{% url 'viaje-create' %}" class="btn btn-primary">
+                + Nuevo viaje
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">
+            Listado de viajes
+        </span>
+        <span class="text-muted small">
+            Haz clic en “Ver” para revisar paradas y detalles del viaje.
+        </span>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 1%;">ID</th>
+                        <th>Ruta</th>
+                        <th>Fecha programada</th>
+                        <th>Vehículo</th>
+                        <th>Conductor</th>
+                        <th>Estado</th>
+                        <th style="width: 1%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for v in viajes %}
+                    <tr>
+                        <td class="fw-semibold">
+                            #{{ v.id }}
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold">
+                                {{ v.nombre_ruta }}
+                            </div>
+                            <div class="text-muted small">
+                                {{ v.origen }} → {{ v.destino }}
+                            </div>
+                        </td>
+
+                        <td>
+                            <div>
+                                {{ v.fecha_programada|date:"d-m-Y" }}
+                            </div>
+                            {% if v.hora_salida %}
+                                <div class="small text-muted">
+                                    Sale: {{ v.hora_salida|time:"H:i" }}
+                                </div>
+                            {% endif %}
+                            {% if v.hora_llegada_estimada %}
+                                <div class="small text-muted">
+                                    ETA: {{ v.hora_llegada_estimada|time:"H:i" }}
+                                </div>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold">
+                                {{ v.vehiculo.placa }}
+                            </div>
+                            <div class="text-muted small">
+                                {{ v.vehiculo.marca }} {{ v.vehiculo.modelo }}
+                            </div>
+                        </td>
+
+                        <td>
+                            {% with nombre=v.conductor.usuario.user.get_full_name|default:v.conductor.usuario.user.username %}
+                                <div class="fw-semibold">
+                                    {{ nombre }}
+                                </div>
+                            {% endwith %}
+                            <div class="text-muted small">
+                                Licencia: {{ v.conductor.tipo_licencia }}
+                            </div>
+                        </td>
+
+                        <td>
+                            {# Badge según estado (puedes ajustar los nombres reales de tus estados) #}
+                            {% with estado=v.estado.nombre %}
+                                {% if "PLAN" in estado|upper %}
+                                    <span class="badge bg-secondary">{{ estado }}</span>
+                                {% elif "EN CURSO" in estado|upper or "EN TRANSITO" in estado|upper %}
+                                    <span class="badge bg-info text-dark">{{ estado }}</span>
+                                {% elif "COMPLET" in estado|upper %}
+                                    <span class="badge bg-success">{{ estado }}</span>
+                                {% elif "CANCEL" in estado|upper %}
+                                    <span class="badge bg-danger">{{ estado }}</span>
+                                {% else %}
+                                    <span class="badge bg-dark">{{ estado }}</span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'viaje-detail' v.pk %}"
+                                   class="btn btn-outline-primary">
+                                    Ver
+                                </a>
+                                {% if user.is_staff or user.is_superuser %}
+                                    <a href="{% url 'viaje-update' v.pk %}"
+                                       class="btn btn-outline-secondary">
+                                        Editar
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No hay viajes creados.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

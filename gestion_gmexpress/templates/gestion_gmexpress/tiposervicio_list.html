@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Servicios de alimentación{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Servicios de alimentación</h2>
+
+{% if tipos_servicio %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for servicio in tipos_servicio %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+
+                    {# 👉 ESPACIO PARA 3 FOTOS (tú solo reemplazas los src) #}
+                    {% if "colación" in servicio.nombre|lower or "colacion" in servicio.nombre|lower %}
+                        <img src="{% static 'gestion_gmexpress/img/servicios/colacionreforzada.jpg' %}"
+                             class="card-img-top" alt="Colación reforzada">
+                    {% elif "almuerzo" in servicio.nombre|lower %}
+                        <img src="{% static 'gestion_gmexpress/img/servicios/almuerzoestandar.jpg' %}"
+                             class="card-img-top" alt="Almuerzo estándar">
+                    {% elif "coffee" in servicio.nombre|lower %}
+                        <img src="{% static 'gestion_gmexpress/img/servicios/coffeebreak.jpg' %}"
+                             class="card-img-top" alt="Coffee break">
+                    {% else %}
+                        {# imagen genérica por si después agregas otro servicio #}
+                        <img src="{% static 'gestion_gmexpress/img/servicios/almuerzoestandar.jpg' %}"
+                             class="card-img-top" alt="{{ servicio.nombre }}">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">{{ servicio.nombre }}</h5>
+                        <p class="card-text small text-muted mb-2">
+                            {{ servicio.descripcion|default:"Servicio de alimentación GMExpress." }}
+                        </p>
+                        <p class="fw-bold mb-0">
+                            ${{ servicio.precio_por_racion }} por ración
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Aún no hay tipos de servicio configurados.
+    </div>
+{% endif %}
+{% endblock %}

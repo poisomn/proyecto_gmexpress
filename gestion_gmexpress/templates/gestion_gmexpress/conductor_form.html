@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if object %}Editar conductor{% else %}Nuevo conductor{% endif %} - GMExpress
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="my-2">
+                    {% if object %}Editar conductor{% else %}Nuevo conductor{% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{% url 'conductor-list' %}"
+                           class="btn btn-outline-secondary">
+                            Volver
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-muted small">
+                Módulo de gestión de conductores - GMExpress
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

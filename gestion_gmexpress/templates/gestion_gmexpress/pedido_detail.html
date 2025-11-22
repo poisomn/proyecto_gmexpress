@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido {{ pedido.numero_pedido }}{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">Pedido {{ pedido.numero_pedido }}</h2>
+
+        <div class="d-flex gap-2">
+            {% if es_admin %}
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'pedido-estado' pedido.pk %}" class="btn btn-outline-primary btn-sm">
+                        Cambiar estado
+                    </a>
+
+                    <a href="{% url 'pedido-asignacion' pedido.pk %}" class="btn btn-outline-secondary btn-sm">
+                        Asignar a viaje
+                    </a>
+
+                    <a href="{% url 'pedido-delete' pedido.pk %}"
+                       class="btn btn-outline-danger btn-sm">
+                        Eliminar pedido
+                    </a>
+                </div>
+            {% endif %}
+
+            <a href="{% url 'pedido-list' %}" class="btn btn-sm btn-secondary">
+                Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Datos principales del pedido -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="my-1">Datos del pedido</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Cliente:</strong> {{ pedido.cliente.nombre }}</p>
+                <p><strong>Email:</strong> {{ pedido.cliente.email }}</p>
+                <p><strong>Teléfono:</strong> {{ pedido.cliente.telefono }}</p>
+
+                <hr>
+
+                <p><strong>Dirección de entrega:</strong><br>
+                    {{ pedido.direccion_entrega }}</p>
+                <p class="mb-1"><strong>Ciudad:</strong> {{ pedido.ciudad }}</p>
+                <p><strong>Comuna:</strong> {{ pedido.comuna }}</p>
+
+                <hr>
+
+                <p><strong>Tipo de servicio:</strong> {{ pedido.tipo_servicio.nombre }}</p>
+                <p><strong>Cantidad de raciones:</strong> {{ pedido.cantidad_cajas }}</p>
+                <p><strong>Monto total:</strong> ${{ pedido.monto_total }}</p>
+                <p><strong>Fecha entrega solicitada:</strong>
+                    {% if pedido.fecha_entrega_solicitada %}
+                        {{ pedido.fecha_entrega_solicitada|date:"d-m-Y" }}
+                    {% else %}
+                        <span class="text-muted">No especificada</span>
+                    {% endif %}
+                </p>
+
+                <p>
+                    <strong>Estado actual:</strong>
+                    <span class="badge bg-secondary">
+                        {{ pedido.estado.nombre }}
+                    </span>
+                </p>
+
+                {% if pedido.instrucciones_especiales %}
+                    <p><strong>Instrucciones especiales:</strong><br>
+                        {{ pedido.instrucciones_especiales }}
+                    </p>
+                {% endif %}
+
+                <p class="text-muted small mb-0">
+                    Creado el {{ pedido.fecha_creacion|date:"d-m-Y H:i" }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info de viaje asociado -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="my-1">Viaje asociado</h5>
+            </div>
+            <div class="card-body">
+                {% if pedido.viaje %}
+                    <p><strong>Viaje:</strong> #{{ pedido.viaje.id }} - {{ pedido.viaje.nombre_ruta }}</p>
+                    <p><strong>Fecha programada:</strong> {{ pedido.viaje.fecha_programada|date:"d-m-Y" }}</p>
+                    <p><strong>Estado del viaje:</strong>
+                        <span class="badge bg-primary">{{ pedido.viaje.estado.nombre }}</span>
+                    </p>
+
+                    <hr>
+
+                    <p><strong>Vehículo:</strong> {{ pedido.viaje.vehiculo }}</p>
+                    <p><strong>Conductor:</strong>
+                        {{ pedido.viaje.conductor.usuario.user.get_full_name|default:pedido.viaje.conductor }}
+                    </p>
+                {% else %}
+                    <p class="text-muted mb-0">
+                        Este pedido aún no ha sido asignado a un viaje.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Historial de estados -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="my-1">Historial de estados</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Cambiado por</th>
+                        <th>Comentario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for h in historial %}
+                    <tr>
+                        <td>{{ h.fecha_cambio|date:"d-m-Y H:i" }}</td>
+                        <td>{{ h.estado.nombre }}</td>
+                        <td>
+                            {% if h.cambiado_por %}
+                                {{ h.cambiado_por.user.get_full_name|default:h.cambiado_por.user.username }}
+                            {% else %}
+                                <span class="text-muted">–</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ h.comentario|default:"-" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">
+                            No hay cambios de estado registrados.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{# Paradas asociadas: SOLO admin/logística las ve #}
+{% if es_admin %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="my-1">Paradas asociadas</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Viaje</th>
+                        <th># Secuencia</th>
+                        <th>Estado entrega</th>
+                        <th>Fecha entrega</th>
+                        <th>Motivo fallo</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in paradas %}
+                    <tr>
+                        <td>
+                            {% if p.viaje %}
+                                #{{ p.viaje.id }} - {{ p.viaje.nombre_ruta }}
+                            {% else %}
+                                <span class="text-muted">–</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ p.secuencia }}</td>
+                        <td>{{ p.estado_entrega.nombre }}</td>
+                        <td>
+                            {% if p.fecha_entrega_real %}
+                                {{ p.fecha_entrega_real|date:"d-m-Y" }}
+                            {% else %}
+                                <span class="text-muted">Pendiente</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ p.get_motivo_fallo_display|default:"-" }}</td>
+                        <td>{{ p.observaciones|default:"-" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">
+                            Este pedido aún no tiene paradas asociadas.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

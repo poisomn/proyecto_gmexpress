@@ -109,3 +109,15 @@ class CambiarEstadoPedidoForm(forms.Form):
         required=False,
         label="Comentario",
     )
+
+
+class AsignarLogisticaPedidoForm(forms.Form):
+    viaje = forms.ModelChoiceField(
+        queryset=Viaje.objects.all(),
+        label="Viaje",
+        help_text="Selecciona el viaje al que se agregará este pedido."
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['viaje'].widget.attrs.update({'class': 'form-select'})

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar pedido {{ pedido.numero_pedido }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="my-1">Confirmar eliminación</h4>
+            </div>
+            <div class="card-body">
+                <p>
+                    Estás a punto de <strong>eliminar</strong> el pedido
+                    <strong>{{ pedido.numero_pedido }}</strong> del cliente
+                    <strong>{{ pedido.cliente.nombre }}</strong>.
+                </p>
+
+                <p class="mb-3">
+                    <strong>Dirección entrega:</strong> {{ pedido.direccion_entrega }}<br>
+                    <strong>Comuna:</strong> {{ pedido.comuna }}<br>
+                    <strong>Tipo servicio:</strong> {{ pedido.tipo_servicio }}<br>
+                    <strong>Cantidad raciones:</strong> {{ pedido.cantidad_cajas }}<br>
+                    <strong>Monto total:</strong> ${{ pedido.monto_total }}
+                </p>
+
+                <p class="text-danger fw-bold">
+                    Esta acción no se puede deshacer.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'pedido-detail' pedido.pk %}" class="btn btn-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            Sí, eliminar pedido
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,33 +1,128 @@
 {% extends "base.html" %}
-{% block title %}Vehículos{% endblock %}
-{% block content %}
-<h1>Vehículos</h1>
-<a href="{% url 'vehiculo-create' %}" class="btn btn-primary mb-3">Nuevo vehículo</a>
+{% block title %}Vehículos - GMExpress{% endblock %}
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Placa</th>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Año</th>
-            <th>Estado</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for v in vehiculos %}
-        <tr>
-            <td>{{ v.placa }}</td>
-            <td>{{ v.marca }}</td>
-            <td>{{ v.modelo }}</td>
-            <td>{{ v.anio }}</td>
-            <td>{{ v.estado }}</td>
-            <td><a href="{% url 'vehiculo-update' v.pk %}" class="btn btn-sm btn-secondary">Editar</a></td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="6">No hay vehículos registrados.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">Vehículos</h2>
+        <p class="text-muted mb-0">
+            Flota disponible para la distribución de servicios GMExpress.
+        </p>
+    </div>
+
+    {% if user.is_staff or user.is_superuser %}
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-dark-subtle text-dark border">
+                Total: <strong>{{ vehiculos|length }}</strong>
+            </span>
+            <a href="{% url 'vehiculo-create' %}" class="btn btn-primary">
+                + Nuevo vehículo
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">
+            Listado de vehículos
+        </span>
+        <span class="text-muted small">
+            Administra la flota y su estado operativo.
+        </span>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 1%;">Placa</th>
+                        <th>Modelo</th>
+                        <th>Año</th>
+                        <th>Capacidad (cajas)</th>
+                        <th>Estado</th>
+                        <th>Conductor asignado</th>
+                        <th style="width: 1%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for v in vehiculos %}
+                    <tr>
+                        <td class="fw-semibold">
+                            {{ v.placa }}
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold">
+                                {{ v.marca }} {{ v.modelo }}
+                            </div>
+                            <div class="text-muted small">
+                                Últ. mantención:
+                                {% if v.fecha_ultimo_mantenimiento %}
+                                    {{ v.fecha_ultimo_mantenimiento|date:"d-m-Y" }}
+                                {% else %}
+                                    <span class="text-muted">Sin registro</span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td>
+                            {{ v.anio }}
+                        </td>
+
+                        <td>
+                            {{ v.capacidad_cajas }}
+                        </td>
+
+                        <td>
+                            {% with estado=v.estado.nombre %}
+                                {% if "DISP" in estado|upper %}
+                                    <span class="badge bg-success">{{ estado }}</span>
+                                {% elif "MANT" in estado|upper or "TALLER" in estado|upper %}
+                                    <span class="badge bg-warning text-dark">{{ estado }}</span>
+                                {% elif "FUERA" in estado|upper or "BAJA" in estado|upper %}
+                                    <span class="badge bg-danger">{{ estado }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ estado }}</span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+
+                        <td>
+                            {% if v.conductor_asignado %}
+                                {% with user=v.conductor_asignado.usuario.user %}
+                                    <div class="fw-semibold">
+                                        {{ user.get_full_name|default:user.username }}
+                                    </div>
+                                    <div class="text-muted small">
+                                        Licencia: {{ v.conductor_asignado.tipo_licencia }}
+                                    </div>
+                                {% endwith %}
+                            {% else %}
+                                <span class="text-muted">Sin conductor asignado</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+                            {% if user.is_staff or user.is_superuser %}
+                                <a href="{% url 'vehiculo-update' v.pk %}"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    Editar
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No hay vehículos registrados.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

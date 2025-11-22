@@ -3,52 +3,200 @@
 {% block title %}Dashboard - GMExpress{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Dashboard Distribución GMExpress</h1>
-
-<div class="row">
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Vehículos</h5>
-                <p class="display-6">{{ total_vehiculos }}</p>
+<div class="mb-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+            <div>
+                <h1 class="h3 mb-2">Panel de Control Distribución GMExpress</h1>
+                <p class="text-muted mb-0">
+                    Visión general de la operación logística: flota, choferes, pedidos y viajes en tiempo real.
+                </p>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Conductores</h5>
-                <p class="display-6">{{ total_conductores }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-warning">
-            <div class="card-body">
-                <h5 class="card-title">Pedidos</h5>
-                <p class="display-6">{{ total_pedidos }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Viajes</h5>
-                <p class="display-6">{{ total_viajes }}</p>
+            <div class="mt-3 mt-md-0 text-md-end">
+                <span class="badge bg-dark text-white px-3 py-2">
+                    <span class="small text-uppercase">Hoy</span>
+                    <span class="ms-2 fw-semibold">
+                        {{ viajes_hoy }} viajes · {{ pedidos_pendientes }} pedidos sin ruta
+                    </span>
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<h3 class="mt-4">Hoy</h3>
-<ul class="list-group">
-    <li class="list-group-item d-flex justify-content-between">
-        Viajes programados hoy
-        <span class="badge bg-primary rounded-pill">{{ viajes_hoy }}</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between">
-        Pedidos sin viaje asignado
-        <span class="badge bg-danger rounded-pill">{{ pedidos_pendientes }}</span>
-    </li>
-</ul>
+{# MÉTRICAS PRINCIPALES #}
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted text-uppercase small">Vehículos</span>
+                    <span>🚚</span>
+                </div>
+                <h2 class="display-6 mb-0">{{ total_vehiculos }}</h2>
+                <p class="text-muted small mb-0 mt-2">
+                    Unidades registradas en la flota.
+                </p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <span class="badge rounded-pill bg-light text-muted">
+                    Gestión de flota
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted text-uppercase small">Conductores</span>
+                    <span>👷‍♂️</span>
+                </div>
+                <h2 class="display-6 mb-0">{{ total_conductores }}</h2>
+                <p class="text-muted small mb-0 mt-2">
+                    Choferes habilitados para reparto.
+                </p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <span class="badge rounded-pill bg-light text-muted">
+                    Recurso humano
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted text-uppercase small">Pedidos</span>
+                    <span>📦</span>
+                </div>
+                <h2 class="display-6 mb-0">{{ total_pedidos }}</h2>
+                <p class="text-muted small mb-0 mt-2">
+                    Órdenes de servicio registradas.
+                </p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <span class="badge rounded-pill bg-light text-muted">
+                    Demanda total
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted text-uppercase small">Viajes</span>
+                    <span>🧭</span>
+                </div>
+                <h2 class="display-6 mb-0">{{ total_viajes }}</h2>
+                <p class="text-muted small mb-0 mt-2">
+                    Rutas de distribución planificadas.
+                </p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <span class="badge rounded-pill bg-light text-muted">
+                    Operación histórica
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    {# OPERACIÓN DE HOY #}
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">Operación de hoy</h5>
+                    <small class="text-muted">
+                        Resumen rápido del día en curso.
+                    </small>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Viajes programados</strong>
+                            <div class="text-muted small">
+                                Cuántas rutas salen hoy desde GMExpress.
+                            </div>
+                        </div>
+                        <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">
+                            {{ viajes_hoy }}
+                        </span>
+                    </div>
+
+                    <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Pedidos sin viaje asignado</strong>
+                            <div class="text-muted small">
+                                Pendientes de planificación en una ruta de reparto.
+                            </div>
+                        </div>
+                        <span class="badge bg-danger rounded-pill px-3 py-2 fs-6">
+                            {{ pedidos_pendientes }}
+                        </span>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row text-muted small">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="me-2 small">●</span>
+                            <span>Objetivo operativo: cero pedidos sin ruta al cierre del día.</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="me-2 small">●</span>
+                            <span>Priorizar asignación para pedidos críticos o de gran volumen.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ACCIONES RÁPIDAS #}
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0">Acciones rápidas</h5>
+                <small class="text-muted">
+                    Atajos para la gestión diaria de distribución.
+                </small>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'pedido-list' %}" class="btn btn-outline-primary w-100">
+                        📦 Ver / gestionar pedidos
+                    </a>
+                    <a href="{% url 'viaje-list' %}" class="btn btn-outline-secondary w-100">
+                        🧭 Planificar y revisar viajes
+                    </a>
+                    <a href="{% url 'vehiculo-list' %}" class="btn btn-outline-dark w-100">
+                        🚚 Revisar flota de vehículos
+                    </a>
+                    <a href="{% url 'conductor-list' %}" class="btn btn-outline-warning w-100">
+                        👷‍♂️ Administrar conductores
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer bg-light border-0">
+                <small class="text-muted">
+                    Tip: usa este panel como punto de partida para coordinar logística con el resto del equipo.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,52 +1,164 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}Pedidos{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">Pedidos</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Pedidos</h2>
 
-<div class="d-flex justify-content-between mb-3">
-    <a href="{% url 'pedido-create' %}" class="btn btn-primary">
-        Nuevo pedido
-    </a>
+    {% if user.is_authenticated and user.perfil.es_cliente %}
+        <a href="{% url 'pedido-create' %}" class="btn btn-primary">
+            Nuevo pedido
+        </a>
+    {% endif %}
 </div>
 
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>N° Pedido</th>
-            <th>Cliente</th>
-            <th>Comuna</th>
-            <th>Estado</th>
-            <th>Viaje</th>
-            <th>Fecha creación</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for p in pedidos %}
-        <tr>
-            <td>{{ p.numero_pedido }}</td>
-            <td>{{ p.cliente }}</td>
-            <td>{{ p.comuna }}</td>
-            <td><span class="badge bg-secondary">{{ p.estado.nombre }}</span></td>
-            <td>
-                {% if p.viaje %}
-                    {{ p.viaje.nombre_ruta }} ({{ p.viaje.fecha_programada }})
-                {% else %}
-                    <span class="text-muted">Sin viaje</span>
-                {% endif %}
-            </td>
-            <td>{{ p.fecha_creacion|date:"d-m-Y H:i" }}</td>
-            <td class="text-end">
-                <a href="{% url 'pedido-estado' p.pk %}" class="btn btn-sm btn-outline-primary">
-                    Cambiar estado
-                </a>
-            </td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="7">No hay pedidos registrados.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+{# Sugerencia tipo "tip" #}
+<div class="card border-0 mb-3 bg-light">
+    <div class="card-body py-2 d-flex align-items-center">
+        <span class="me-2" style="font-size: 1.2rem;">💡</span>
+        <div class="small text-muted">
+            Sugerencia: haz <strong>click</strong> en tu
+            <strong>número de pedido</strong> para ver los detalles completos.
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-2">
+            <div>
+                <strong>Filtrar por estado</strong>
+                <div class="small text-muted">
+                    Usa las pestañas como si fueran ventanas del navegador:
+                    elige un estado y verás solo esos pedidos.
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs card-header-tabs flex-wrap">
+                {# Pestaña "Todos" #}
+                <li class="nav-item">
+                    <a class="nav-link {% if estado_selected == 'todos' %}active{% endif %}"
+                       href="{% url 'pedido-list' %}">
+                        🌐 Todos
+                        <span class="badge bg-secondary ms-1">
+                            {{ total_pedidos }}
+                        </span>
+                    </a>
+                </li>
+
+                {# Pestañas por cada estado disponible #}
+                {% for e in estados_tab %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if estado_selected != 'todos' and estado_selected == e.id|stringformat:'s' %}active{% endif %}"
+                           href="{% url 'pedido-list' %}?estado={{ e.id }}">
+                            {# Iconito según nombre del estado #}
+                            {% if e.nombre == 'PENDIENTE_ASIGNACION' %}
+                                ⏳
+                            {% elif e.nombre == 'ASIGNADO' %}
+                                📦
+                            {% elif e.nombre == 'EN_RUTA' %}
+                                🚚
+                            {% elif e.nombre == 'ENTREGADO' %}
+                                ✅
+                            {% elif e.nombre == 'FALLIDO' %}
+                                ❌
+                            {% else %}
+                                📁
+                            {% endif %}
+                            {{ e.nombre|title }}
+                            <span class="badge bg-secondary ms-1">
+                                {{ e.count }}
+                            </span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>N° Pedido</th>
+                    <th>Cliente</th>
+                    <th>Comuna</th>
+                    <th>Estado</th>
+                    <th>Viaje</th>
+                    <th>Fecha creación</th>
+                    {% if user.is_staff or user.is_superuser or user.perfil.es_admin %}
+                        <th class="text-end">Acciones</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in pedidos %}
+                <tr>
+                    <td>
+                        <a href="{% url 'pedido-detail' p.pk %}">
+                            {{ p.numero_pedido }}
+                        </a>
+                    </td>
+                    <td>{{ p.cliente.nombre }}</td>
+                    <td>{{ p.comuna }}</td>
+                    <td>
+                        <span class="badge bg-secondary">
+                            {# Iconito en la tabla según estado del pedido #}
+                            {% if p.estado.nombre == 'PENDIENTE_ASIGNACION' %}
+                                ⏳
+                            {% elif p.estado.nombre == 'ASIGNADO' %}
+                                📦
+                            {% elif p.estado.nombre == 'EN_CAMINO' %}
+                                🚚
+                            {% elif p.estado.nombre == 'ENTREGADO' %}
+                                ✅
+                            {% elif p.estado.nombre == 'FALLIDO' %}
+                                ❌
+                            {% else %}
+                                📁
+                            {% endif %}
+                            {{ p.estado.nombre }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if p.viaje %}
+                            Viaje #{{ p.viaje.id }} - {{ p.viaje.nombre_ruta }}
+                        {% else %}
+                            <span class="text-muted">Sin viaje</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ p.fecha_creacion|date:"d-m-Y H:i" }}</td>
+
+                    {% if user.is_staff or user.is_superuser or user.perfil.es_admin %}
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'pedido-estado' p.pk %}"
+                                   class="btn btn-outline-primary">
+                                    Estado
+                                </a>
+                                <a href="{% url 'pedido-asignacion' p.pk %}"
+                                   class="btn btn-outline-secondary">
+                                    Asignar
+                                </a>
+                                <a href="{% url 'pedido-delete' p.pk %}"
+                                   class="btn btn-outline-danger">
+                                    Eliminar
+                                </a>
+                            </div>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-3">
+                        No hay pedidos registrados para este filtro.
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

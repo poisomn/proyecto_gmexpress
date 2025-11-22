@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Asignar logística a pedido{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <h4 class="my-1">Pedido {{ pedido.numero_pedido }}</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Cliente:</strong> {{ pedido.cliente.nombre }}</p>
+                <p><strong>Dirección entrega:</strong> {{ pedido.direccion_entrega }}</p>
+                <p>
+                    <strong>Comuna / Ciudad:</strong>
+                    {{ pedido.comuna }} / {{ pedido.ciudad }}
+                </p>
+                <p>
+                    <strong>Tipo servicio:</strong>
+                    {{ pedido.tipo_servicio.nombre }}
+                    ({{ pedido.cantidad_cajas }} raciones)
+                </p>
+                <p>
+                    <strong>Fecha entrega solicitada:</strong>
+                    {{ pedido.fecha_entrega_solicitada|date:"d-m-Y" }}
+                </p>
+                <p>
+                    <strong>Estado actual:</strong>
+                    <span class="badge bg-secondary">{{ pedido.estado.nombre }}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="my-1">Asignar viaje / vehículo / conductor</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    Al asignar un <strong>viaje</strong>, este pedido quedará asociado
+                    al <strong>vehículo</strong> y <strong>conductor</strong> de ese viaje.
+                    Además se creará una <em>parada</em> en la ruta.
+                </p>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <a href="{% url 'pedido-detail' pedido.pk %}"
+                           class="btn btn-outline-secondary me-2">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Asignar viaje
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

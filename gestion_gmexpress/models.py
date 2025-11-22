@@ -19,33 +19,34 @@ class Rol(models.Model):
 
 
 class PerfilUsuario(models.Model):
-    """
-    Extiende al User de Django con datos extra que la BD tenía en `usuarios`.
-    """
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='perfil'
-    )
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
     telefono = models.CharField(max_length=20, blank=True)
     activo = models.BooleanField(default=True)
     intentos_login = models.IntegerField(default=0)
     bloqueado_hasta = models.DateTimeField(null=True, blank=True)
-
-    # Relación con roles (equivalente a usuario_roles)
     roles = models.ManyToManyField(
         Rol,
         through='UsuarioRol',
         through_fields=('usuario', 'rol'),
         related_name='usuarios',
     )
-
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.user.get_full_name() or self.user.username
 
+    @property
+    def es_cliente(self) -> bool:
+        return self.roles.filter(nombre='CLIENTE', activo=True).exists()
+
+    @property
+    def es_admin(self) -> bool:
+        
+        if self.user.is_superuser or self.user.is_staff:
+            return True
+        return self.roles.filter(nombre='ADMIN', activo=True).exists()
 
 class UsuarioRol(models.Model):
     usuario = models.ForeignKey(
