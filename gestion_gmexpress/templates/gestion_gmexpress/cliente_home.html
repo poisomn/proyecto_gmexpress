@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-dark text-white py-5 mb-5" style="background: linear-gradient(135deg, #01580e 0%, #05eb80 100%);">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <img src="{% static 'gestion_gmexpress/img/logo-horizontal.png' %}" alt="GM Express Logo"
+                    class="img-fluid mb-4" style="max-height: 80px; filter: brightness(0) invert(1);">
+                <h1 class="display-4 fw-bold mb-3">Bienvenido a GM Express</h1>
+                <p class="lead mb-4">Soluciones gastronómicas integrales para su empresa. Calidad, sabor y servicio
+                    profesional en cada entrega.</p>
+                <a href="#servicios" class="btn btn-primary btn-lg px-4 fw-bold rounded-pill shadow"
+                    style="background-color: #01580e; border-color: #01580e;">Explorar
+                    Servicios</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Anchor -->
+<div id="servicios"></div>
+
+<div class="container mb-5">
+
+    <!-- 1. Servicio de Alimentación Tradicional -->
+    <div class="row featurette align-items-center mb-5 py-5 border-bottom">
+        <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading fw-bold text-dark mb-3">Servicio de Alimentación Tradicional</h2>
+            <p class="lead text-muted">Servicios de alimentación tradicional (presencial)</p>
+            <p>Este servicio esta orientado a la atención de los clientes en nuestras instalaciones, para ello
+                disponemos de una linea de servicio donde cada comensal elije una opción según sus preferencias.</p>
+            <p>Contamos con un comedor completamente renovado y equipado para ofrecer una grata experiencia gastronómica
+                a cada uno de nuestros clientes.</p>
+            <ul class="list-unstyled mt-3">
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Almuerzo</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Cena</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Desayuno</li>
+            </ul>
+        </div>
+        <div class="col-md-5 order-md-1">
+            <div id="carouselTradicional" class="carousel slide shadow rounded overflow-hidden" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/almuerzoestandar.jpg' %}"
+                            class="d-block w-100" alt="Almuerzo Estándar 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/almuerzoestandar2.jpg' %}"
+                            class="d-block w-100" alt="Almuerzo Estándar 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/almuerzoestandar3.jpg' %}"
+                            class="d-block w-100" alt="Almuerzo Estándar 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/almuerzoestandar4.jpg' %}"
+                            class="d-block w-100" alt="Almuerzo Estándar 4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/almuerzoestandar5.jpg' %}"
+                            class="d-block w-100" alt="Almuerzo Estándar 5">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselTradicional"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselTradicional"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Servicio Transportado -->
+    <div class="row featurette align-items-center mb-5 py-5 border-bottom">
+        <div class="col-md-7">
+            <h2 class="featurette-heading fw-bold text-dark mb-3">Servicio Transportado</h2>
+            <p>En esta modalidad, el servicio cuenta con contenedores y vehículos acondicionados especialmente para el
+                transporte adecuado de los alimentos, conservando su temperatura y asegurando la inocuidad. Este
+                servicio esta orientado a clientes empresas que no cuentan con instalaciones adaptadas para la
+                manipulación y/o producción de alimentos.</p>
+
+            <h5 class="fw-bold mt-4">¿Cómo funciona?</h5>
+            <p>Para llevar a cabo este servicio, se le envía la minuta con una semana de anticipación acompañado de un
+                archivo Ms Excel con el objetivo de realizar solicitudes con anticipación, contribuyendo a una
+                planificación eficiente entre el cliente y la empresa.</p>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-dark"><i class="bi bi-box-seam me-2"></i>Client Response</h6>
+                            <p class="small text-muted mb-0">Los Almuerzos se envían rotulados al cliente empresa, el
+                                cual se encarga y responsabiliza de la distribución de los almuerzos/Colaciones hacia
+                                sus colaboradores.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-dark"><i class="bi bi-people me-2"></i>GM Service</h6>
+                            <p class="small text-muted mb-0">Servicio complementario donde un colaborador de GM Express
+                                se encarga de la entrega, distribución y orden del espacio habilitado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div id="carouselTransportado" class="carousel slide shadow rounded overflow-hidden"
+                data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/serviciotransportado.jpg' %}"
+                            class="d-block w-100" alt="Servicio Transportado 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/serviciotransportado2.jpg' %}"
+                            class="d-block w-100" alt="Servicio Transportado 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/serviciotransportado3.jpg' %}"
+                            class="d-block w-100" alt="Servicio Transportado 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/serviciotransportado4.jpg' %}"
+                            class="d-block w-100" alt="Servicio Transportado 4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/serviciotransportado5.jpg' %}"
+                            class="d-block w-100" alt="Servicio Transportado 5">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselTransportado"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselTransportado"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Servicios Complementarios -->
+    <div class="row featurette align-items-center mb-5 py-5 border-bottom">
+        <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading fw-bold text-dark mb-3">Servicios Complementarios</h2>
+            <p class="lead text-muted">Soluciones adicionales para su empresa</p>
+
+            <div class="d-flex mb-4">
+                <div class="flex-shrink-0">
+                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 50px; height: 50px; background-color: #01580e; border-color: #01580e;">
+                        <i class="bi bi-bag-plus"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h5 class="fw-bold">Colaciones Reforzadas</h5>
+                    <p class="text-muted">Orientado a cliente-empresas que requieran entregar colación complementaria o
+                        de refuerzo para las jornadas laborales de sus colaboradores.</p>
+                </div>
+            </div>
+
+            <div class="d-flex">
+                <div class="flex-shrink-0">
+                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 50px; height: 50px; background-color: #01580e; border-color: #01580e;">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h5 class="fw-bold">Tienda Snack y bebestibles</h5>
+                    <p class="text-muted">Ofrecemos una variedad de snack dulces y salados, ademas de bebestibles entre
+                        los cuales se encuentran jugos, bebidas, agua mineral y energéticas.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 order-md-1">
+            <div id="carouselComplementarios" class="carousel slide shadow rounded overflow-hidden"
+                data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/colacionreforzada.jpg' %}"
+                            class="d-block w-100" alt="Colación Reforzada 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/colacionreforzada2.jpg' %}"
+                            class="d-block w-100" alt="Colación Reforzada 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/colacionreforzada3.jpg' %}"
+                            class="d-block w-100" alt="Colación Reforzada 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/colacionreforzada4.jpg' %}"
+                            class="d-block w-100" alt="Colación Reforzada 4">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselComplementarios"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselComplementarios"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Eventos Corporativos -->
+    <div class="row featurette align-items-center mb-5 py-5 border-bottom">
+        <div class="col-md-7">
+            <h2 class="featurette-heading fw-bold text-dark mb-3">Eventos Corporativos</h2>
+            <p>Ponemos a disposición nuestros servicios y experiencia con la mejor relación calidad/precio. Nuestro
+                equipo conformado por profesionales estarán a disposición del cliente para la realización de cada
+                evento.</p>
+
+            <div class="row row-cols-1 row-cols-sm-2 g-3 mt-2">
+                <div class="col"><i class="bi bi-star-fill text-warning me-2"></i>Recepciones Corporativas</div>
+                <div class="col"><i class="bi bi-cup-hot-fill text-brown me-2"></i>Coffee Break</div>
+                <div class="col"><i class="bi bi-people-fill text-info me-2"></i>Catering</div>
+                <div class="col"><i class="bi bi-gift-fill text-danger me-2"></i>Aniversario & Cumpleaños</div>
+                <div class="col"><i class="bi bi-egg-fried text-warning me-2"></i>Brunch</div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div id="carouselEventos" class="carousel slide shadow rounded overflow-hidden" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/coffeebreak.jpg' %}" class="d-block w-100"
+                            alt="Eventos Corporativos 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/coffeebreak2.jpg' %}" class="d-block w-100"
+                            alt="Eventos Corporativos 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/coffeebreak3.jpg' %}" class="d-block w-100"
+                            alt="Eventos Corporativos 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/coffeebreak4.jpg' %}" class="d-block w-100"
+                            alt="Eventos Corporativos 4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/coffeebreak5.jpg' %}" class="d-block w-100"
+                            alt="Eventos Corporativos 5">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselEventos"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselEventos"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Concesión de Casinos -->
+    <div class="row featurette align-items-center py-5">
+        <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading fw-bold text-dark mb-3">Concesión de Casinos</h2>
+            <p class="lead">Considerando los requerimientos y necesidades de los clientes empresa, entregamos servicios
+                de alimentación habilitando sus instalaciones para la elaboración de nuestros productos gastronómicos.
+            </p>
+            <p>Nos encargamos de equipar las áreas y espacios para cumplir con todas las normas sanitarias vigentes y la
+                eficiencia de los procesos para entregar un servicio de calidad. Ademas se dispone de un equipo
+                profesional, el cual se encargara de la gestión y administración del casino.</p>
+        </div>
+        <div class="col-md-5 order-md-1">
+            <div id="carouselCasinos" class="carousel slide shadow rounded overflow-hidden" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/concesiondecasinos.jpg' %}"
+                            class="d-block w-100" alt="Concesión de Casinos 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/concesiondecasinos2.jpg' %}"
+                            class="d-block w-100" alt="Concesión de Casinos 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/concesiondecasinos3.jpg' %}"
+                            class="d-block w-100" alt="Concesión de Casinos 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/concesiondecasinos4.jpg' %}"
+                            class="d-block w-100" alt="Concesión de Casinos 4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'gestion_gmexpress/img/servicios/concesiondecasinos5.jpg' %}"
+                            class="d-block w-100" alt="Concesión de Casinos 5">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselCasinos"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselCasinos"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Footer -->
+<footer class="bg-dark text-white pt-5 pb-4 mt-5"
+    style="background: linear-gradient(135deg, #01580e 0%, #05eb80 100%);">
+    <div class="container text-center text-md-start">
+        <div class="row text-center text-md-start">
+
+            <!-- Company Info -->
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-white">GM Express</h5>
+                <p>Soluciones gastronómicas integrales para empresas. Comprometidos con la calidad, el sabor y la
+                    excelencia en el servicio.</p>
+            </div>
+
+            <!-- Products -->
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-white">Servicios</h5>
+                <p><a href="#" class="text-white text-decoration-none">Alimentación Tradicional</a></p>
+                <p><a href="#" class="text-white text-decoration-none">Servicio Transportado</a></p>
+                <p><a href="#" class="text-white text-decoration-none">Eventos Corporativos</a></p>
+                <p><a href="#" class="text-white text-decoration-none">Concesión de Casinos</a></p>
+            </div>
+
+            <!-- Useful links -->
+            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-white">Enlaces Útiles</h5>
+                <p><a href="#" class="text-white text-decoration-none">Tu Cuenta</a></p>
+                <p><a href="{% url 'mis-pedidos' %}" class="text-white text-decoration-none">Mis Pedidos</a></p>
+                <p><a href="#" class="text-white text-decoration-none">Ayuda</a></p>
+                <p><a href="#" class="text-white text-decoration-none">Contacto</a></p>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-white">Contacto</h5>
+                <p><i class="bi bi-house-door-fill me-3"></i> Gerónimo Mendez #1851, B. Industrial, Coquimbo</p>
+                <p><i class="bi bi-envelope-fill me-3"></i> contacto@gmexpress.cl</p>
+                <p><i class="bi bi-telephone-fill me-3"></i> +56 9 1234 5678</p>
+                <p><i class="bi bi-printer-fill me-3"></i> +56 2 2345 6789</p>
+            </div>
+        </div>
+
+        <hr class="mb-4">
+
+        <div class="row align-items-center">
+            <div class="col-md-7 col-lg-8" style="padding-left: 40%;">
+                <p>Copyright © 2025 Todos los derechos reservados por:
+                    <a href=" #" class="text-white text-decoration-none"><strong>GM
+                            Express</strong></a>
+                </p>
+            </div>
+            <div class="col-md-5 col-lg-4">
+                <div class="text-center text-md-end">
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i
+                                    class="bi bi-facebook"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i
+                                    class="bi bi-twitter"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i
+                                    class="bi bi-google"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm text-white" style="font-size: 23px;"><i
+                                    class="bi bi-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}

@@ -1,122 +1,124 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GMExpress{% endblock %}</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-          crossorigin="anonymous">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <style>
-        body {
-            background-color: #f3f4f6;
-        }
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        .gm-navbar {
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-        }
-
-        .gm-navbar .nav-link {
-            color: #111827;
-            font-weight: 500;
-        }
-
-        .gm-navbar .nav-link:hover,
-        .gm-navbar .nav-link:focus {
-            color: #2563eb;
-        }
-
-        .gm-logo {
-            height: 75px;
-            width: auto;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'gestion_gmexpress/css/styles.css' %}">
 </head>
-<body>
-<nav class="navbar navbar-expand-lg gm-navbar mb-4">
-    <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-            <img src="{% static 'gestion_gmexpress/img/Logo-horizontal.png' %}"
-                 alt="GMExpress"
-                 class="gm-logo">
-        </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar" aria-controls="mainNavbar"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {% if user.is_authenticated %}
-                    {# ADMIN / LOGÍSTICA: usamos is_staff / is_superuser #}
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'gestion_gmexpress/img/Logo-horizontal.png' %}" alt="GMExpress" height="40"
+                    class="gm-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if user.is_authenticated %}
+                    {# ADMIN / LOGÍSTICA #}
                     {% if user.is_staff or user.is_superuser %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'vehiculo-list' %}">Vehículos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'conductor-list' %}">Conductores</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'viaje-list' %}">Viajes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'pedido-list' %}">Pedidos</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pedido-list' %}">Pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'viaje-list' %}">Viajes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vehiculo-list' %}">Vehículos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'conductor-list' %}">Conductores</a>
+                    </li>
                     {% else %}
-                        {# CLIENTE: servicios y pedidos propios #}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tiposervicio-list' %}">Servicios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'mis-pedidos' %}">Mis pedidos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'pedido-create' %}">Nuevo pedido</a>
-                        </li>
+                    {# CLIENTE #}
+                    {% if user.perfil.es_cliente %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'mis-pedidos' %}">Mis pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pedido-create' %}">Nuevo pedido</a>
+                    </li>
                     {% endif %}
-                {% endif %}
-            </ul>
 
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                {% if user.is_authenticated %}
-                    <li class="nav-item d-flex align-items-center me-2">
-                        <span class="navbar-text text-muted">
-                            Hola, {{ user.username }}
-                        </span>
-                    </li>
+                    {# CONDUCTOR #}
+                    {% if user.perfil.conductor %}
                     <li class="nav-item">
-                        <form action="{% url 'logout' %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-danger btn-sm">
-                                Salir
-                            </button>
-                        </form>
+                        <a class="nav-link" href="{% url 'mis-viajes' %}">Mis Viajes</a>
                     </li>
-                {% else %}
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Ingresar</a>
+                        <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
                     </li>
-                {% endif %}
-            </ul>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
     </div>
-</nav>
 
-<div class="container mb-4">
-    {% block content %}{% endblock %}
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

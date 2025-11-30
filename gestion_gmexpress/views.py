@@ -31,9 +31,13 @@ from .forms import (
 def home(request):
     perfil = getattr(request.user, 'perfil', None)
 
-    # Si es cliente -> lo mando directo a "mis pedidos"
+    # Si es cliente -> mostramos la home de cliente
     if perfil and getattr(perfil, 'es_cliente', False):
-        return redirect('mis-pedidos')
+        return render(request, 'gestion_gmexpress/cliente_home.html')
+
+    # Si es conductor -> lo mando directo a "mis viajes"
+    if perfil and hasattr(perfil, 'conductor'):
+        return redirect('mis-viajes')
 
     # Si es admin / logística -> ve el dashboard con métricas
     total_vehiculos = Vehiculo.objects.count()
@@ -627,3 +631,121 @@ class ConductorUpdateView(AdminRequiredMixin, UpdateView):
     form_class = ConductorForm
     template_name = 'gestion_gmexpress/conductor_form.html'
     success_url = reverse_lazy('conductor-list')
+
+class ConductorRequiredMixin(LoginRequiredMixin):
+    """
+    Solo permite acceso a usuarios con rol CONDUCTOR (o que tengan un Conductor asociado).
+    """
+    def dispatch(self, request, *args, **kwargs):
+        perfil = getattr(request.user, 'perfil', None)
+        # Verificamos si tiene perfil y si tiene un conductor asociado
+        if not perfil or not hasattr(perfil, 'conductor'):
+             raise PermissionDenied("No tienes permisos de conductor para acceder a esta sección.")
+        return super().dispatch(request, *args, **kwargs)
+
+
+# ------------------------
+# Vistas para el Conductor
+# ------------------------
+
+class MisViajesListView(ConductorRequiredMixin, ListView):
+    model = Viaje
+    template_name = 'gestion_gmexpress/conductor_viaje_list.html'
+    context_object_name = 'viajes'
+    ordering = ['-fecha_programada']
+
+    def get_queryset(self):
+        from django.db.models import Sum
+        from django.db.models.functions import Coalesce
+        
+        # El conductor solo ve sus viajes
+        perfil = self.request.user.perfil
+        conductor = perfil.conductor
+        return Viaje.objects.filter(conductor=conductor).annotate(
+            total_cajas_real=Coalesce(Sum('paradas__pedido__cantidad_cajas'), 0)
+        ).order_by('-fecha_programada')
+
+
+class HojaRutaView(ConductorRequiredMixin, DetailView):
+    model = Viaje
+    template_name = 'gestion_gmexpress/hoja_ruta.html'
+    context_object_name = 'viaje'
+
+    def get_queryset(self):
+        # Asegurar que el viaje pertenece al conductor
+        perfil = self.request.user.perfil
+        conductor = perfil.conductor
+        return Viaje.objects.filter(conductor=conductor)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        viaje = self.object
+        # Paradas ordenadas por secuencia
+        context['paradas'] = viaje.paradas.select_related('pedido', 'pedido__cliente', 'estado_entrega').order_by('secuencia')
+        # Estados de entrega para el modal/formulario
+        context['estados_entrega'] = EstadoEntrega.objects.all()
+        return context
+
+
+@login_required
+def actualizar_estado_entrega(request, pk):
+    """
+    Actualiza el estado de una Parada (y opcionalmente del Pedido).
+    Solo para el conductor asignado al viaje de esa parada.
+    """
+    parada = get_object_or_404(Parada, pk=pk)
+    viaje = parada.viaje
+    
+    # Verificar que el usuario sea el conductor del viaje
+    perfil = getattr(request.user, 'perfil', None)
+    if not perfil or not hasattr(perfil, 'conductor') or viaje.conductor != perfil.conductor:
+        raise PermissionDenied("No tienes permiso para actualizar esta entrega.")
+
+    if request.method == 'POST':
+        nuevo_estado_id = request.POST.get('estado_entrega')
+        motivo_fallo = request.POST.get('motivo_fallo')
+        observaciones = request.POST.get('observaciones')
+
+        if nuevo_estado_id:
+            nuevo_estado = get_object_or_404(EstadoEntrega, pk=nuevo_estado_id)
+            parada.estado_entrega = nuevo_estado
+            
+            # Lógica de sincronización con Pedido
+            # Si la parada es ENTREGADO -> Pedido ENTREGADO
+            # Si la parada es FALLIDO -> Pedido NO_ENTREGADO (o similar)
+            pedido = parada.pedido
+            
+            if nuevo_estado.nombre == 'ENTREGADO':
+                try:
+                    estado_entregado = EstadoPedido.objects.get(nombre='ENTREGADO')
+                    pedido.estado = estado_entregado
+                    pedido.save()
+                    
+                    # Registrar historial
+                    HistorialEstadoPedido.objects.create(
+                        pedido=pedido,
+                        estado=estado_entregado,
+                        comentario=f"Entregado por conductor {viaje.conductor}",
+                        cambiado_por=perfil
+                    )
+                except EstadoPedido.DoesNotExist:
+                    pass
+            
+            elif nuevo_estado.nombre == 'FALLIDO':
+                 # Podríamos tener un estado 'NO_ENTREGADO' o 'REPROGRAMAR'
+                 pass
+
+        if motivo_fallo:
+            parada.motivo_fallo = motivo_fallo
+        
+        if observaciones:
+            parada.observaciones = observaciones
+            
+        parada.atendido_por = perfil.conductor
+        parada.fecha_entrega_real = timezone.localdate()
+        parada.hora_llegada_real = timezone.now()
+        parada.save()
+        
+        messages.success(request, f"Entrega de pedido {parada.pedido.numero_pedido} actualizada.")
+
+    return redirect('hoja-ruta', pk=viaje.pk)

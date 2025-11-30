@@ -36,4 +36,11 @@ urlpatterns = [
     path('pedidos/<int:pk>/eliminar/', views.PedidoDeleteView.as_view(), name='pedido-delete'),
     # Mis pedidos (vista filtrada para cliente)
     path('mis-pedidos/', views.MisPedidosListView.as_view(), name='mis-pedidos'),
+
+    # ------------------------
+    # Vistas Conductor
+    # ------------------------
+    path('mis-viajes/', views.MisViajesListView.as_view(), name='mis-viajes'),
+    path('mi-ruta/<int:pk>/', views.HojaRutaView.as_view(), name='hoja-ruta'),
+    path('entrega/<int:pk>/actualizar/', views.actualizar_estado_entrega, name='entrega-update'),
 ]
